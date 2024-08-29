@@ -1,0 +1,80 @@
+﻿@model ExcelDataLoader.Models.UploadedFile
+
+@{
+    ViewData["Title"] = "File Data";
+}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<h2>File Data: @Model.FileName</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th rowspan="2">Б/сч</th>
+            <th colspan="2">ВХОДЯЩЕЕ САЛЬДО</th>
+            <th colspan="2">ОБОРОТЫ</th>
+            <th colspan="2">ИСХОДЯЩЕЕ САЛЬДО</th>
+        </tr>
+        <tr>
+            <th>Актив</th>
+            <th>Пассив</th>
+            <th>Дебет</th>
+            <th>Кредит</th>
+            <th>Актив</th>
+            <th>Пассив</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var cls in Model.Classes)
+        {
+            <tr>
+                <td colspan="7">@cls.ClassName</td>
+            </tr>
+            foreach (var account in cls.Accounts)
+            {
+                var balance = account.Balances.FirstOrDefault();
+                var turnover = account.Turnovers.FirstOrDefault();
+                <tr>
+                    <td>@account.AccountCode</td>
+                    <td>@balance?.InitialActive</td>
+                    <td>@balance?.InitialPassive</td>
+                    <td>@balance?.FinalActive</td>
+                    <td>@balance?.FinalPassive</td>
+                    <td>@turnover?.Debit</td>
+                    <td>@turnover?.Credit</td>
+                </tr>
+            }
+
+            @foreach (var classTotal in cls.ClassTotals)
+            {
+                <tr>
+                    <td>По классу</td>
+                    <td>@classTotal.InitialActive</td>
+                    <td>@classTotal.InitialPassive</td>
+                    <td>@classTotal.TurnoverDebit</td>
+                    <td>@classTotal.TurnoverCredit</td>
+                    <td>@classTotal.FinalActive</td>
+                    <td>@classTotal.FinalPassive</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
